@@ -9,7 +9,7 @@ const AppRoutes = () => {
     return (
         <Routes>
             <Route path='/' element={<Reservations />} />
-            <Route path='reservation' element={<ReservationDetails />} />
+            <Route path='reservations/:id' element={<ReservationDetails />} />
             <Route path='addurl' element={<AddUrl />} />
             <Route path='deleteurl' element={<DeleteUrl />} />
         </Routes>

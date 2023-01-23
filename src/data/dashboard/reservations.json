@@ -1,0 +1,20 @@
+[
+  {
+    "id": "F8762",
+    "reservationdate": "2022-04-16",
+    "room": "Room 1",
+    "status": "Accepted"
+  },
+  {
+    "id": "A9245",
+    "reservationdate": "2022-04-16",
+    "room": "Room 2",
+    "status": "Pending"
+  },
+  {
+    "id": "Y7902",
+    "reservationdate": "2022-04-16",
+    "room": "Room 3",
+    "status": "Declined"
+  }
+]
