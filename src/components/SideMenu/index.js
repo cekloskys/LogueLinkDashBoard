@@ -12,11 +12,15 @@ const SideMenu = () => {
         },
         {
             key: 'addurl',
-            label: 'Add URL',
+            label: 'Create Link / Tutorial',
         },
         {
             key: 'deleteurl',
-            label: 'Delete URL',
+            label: 'Links',
+        },
+        {
+            key: 'tutorials',
+            label: 'Tutorials',
         },
     ];
 

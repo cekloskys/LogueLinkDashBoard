@@ -1,0 +1,55 @@
+type Tutorials @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  uri: String
+  title: String
+}
+
+type Links @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  uri: String
+  title: String
+}
+
+type Reservations @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  studentName: String
+  studentEmai: String
+  date: String
+  startTime: String
+  room: String
+  hrBlock: Int
+  nbrParticipants: Int
+  course: String
+  teacher: String
+  userID: ID! @index(name: "byUser")
+  endTime: String
+}
+
+type Times @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  time: AWSTime
+}
+
+type User @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  name: String!
+  email: String!
+  sub: String!
+  Reservations: [Reservations] @hasMany(indexName: "byUser", fields: ["id"])
+}
+
+type Blocks @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  hour: Int!
+}
+
+type Rooms @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  room: String!
+}
+
+type Dates @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  date: String!
+}
+ 

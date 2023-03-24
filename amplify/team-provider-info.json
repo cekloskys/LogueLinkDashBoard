@@ -1,0 +1,20 @@
+{
+  "staging": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-loguelink-staging-175433-authRole",
+      "UnauthRoleArn": "arn:aws:iam::601488025135:role/amplify-loguelink-staging-175433-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::601488025135:role/amplify-loguelink-staging-175433-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-loguelink-staging-175433-deployment",
+      "UnauthRoleName": "amplify-loguelink-staging-175433-unauthRole",
+      "StackName": "amplify-loguelink-staging-175433",
+      "StackId": "arn:aws:cloudformation:us-east-1:601488025135:stack/amplify-loguelink-staging-175433/fa7c0520-a96b-11ed-9323-0a11094d5f17",
+      "AmplifyAppId": "d3ft3vm0slm9s6"
+    },
+    "categories": {
+      "auth": {
+        "LogueLink": {}
+      }
+    }
+  }
+}
