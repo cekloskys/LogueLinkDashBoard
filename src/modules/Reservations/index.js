@@ -1,14 +1,39 @@
 import { Card, Table } from 'antd';
-import reservations from '../../data/dashboard/reservations.json';
 import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from "react";
+import { DataStore } from '@aws-amplify/datastore';
+import { Reservations } from '../../models';
 
-const Reservations = () => {
+const Reservation = () => {
 
+    const [reservations, setReservations] = useState([]);
 
     const navigate = useNavigate();
 
+    useEffect(() => {
+        DataStore.query(Reservations).then(setReservations);
+    }, []);
+
 
     const tableColumns = [
+        {
+            title: 'Name',
+            dataIndex: 'studentName',
+            key: 'studentName',
+            sorter:
+            {
+                compare: (a, b) => {
+                    if (a.studentName > b.studentName) {
+                        return -1;
+                    }
+                    if (a.studentName < b.studentName) {
+                        return 1;
+                    }
+                    return 0;
+                },
+                multiple: 1,
+            },
+        },
         {
             title: 'ID',
             dataIndex: 'id',
@@ -16,21 +41,34 @@ const Reservations = () => {
         },
         {
             title: 'Reservation Date',
-            dataIndex: 'reservationdate',
-            key: 'reservationdate',
+            dataIndex: 'date',
+            key: 'date',
+            sorter:
+            {
+                compare: (a, b) => {
+                    if (a.date > b.date) {
+                        return -1;
+                    }
+                    if (a.date < b.date) {
+                        return 1;
+                    }
+                    return 0;
+                },
+                multiple: 1,
+            },
         },
         {
             title: 'Room',
             dataIndex: 'room',
             key: 'room',
-            
+
         },
-        
+
     ];
 
     return (
-        <Card title='Reservations' style={{margin: 20}}>
-            <Table 
+        <Card title='Reservations' style={{ margin: 20 }}>
+            <Table
                 dataSource={reservations}
                 columns={tableColumns}
                 rowKey='id'
@@ -42,4 +80,4 @@ const Reservations = () => {
     );
 };
 
-export default Reservations;
+export default Reservation;
