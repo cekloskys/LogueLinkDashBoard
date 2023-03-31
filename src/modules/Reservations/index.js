@@ -17,29 +17,6 @@ const Reservation = () => {
 
     const tableColumns = [
         {
-            title: 'Name',
-            dataIndex: 'studentName',
-            key: 'studentName',
-            sorter:
-            {
-                compare: (a, b) => {
-                    if (a.studentName > b.studentName) {
-                        return -1;
-                    }
-                    if (a.studentName < b.studentName) {
-                        return 1;
-                    }
-                    return 0;
-                },
-                multiple: 1,
-            },
-        },
-        {
-            title: 'ID',
-            dataIndex: 'id',
-            key: 'id',
-        },
-        {
             title: 'Reservation Date',
             dataIndex: 'date',
             key: 'date',
@@ -57,6 +34,16 @@ const Reservation = () => {
                 multiple: 1,
             },
         },
+        {
+            title: 'Time',
+            dataIndex: 'startTime',
+            key: 'startTime',
+        },
+        {
+            title: 'Name',
+            dataIndex: 'studentName',
+            key: 'studentName',
+        },   
         {
             title: 'Room',
             dataIndex: 'room',

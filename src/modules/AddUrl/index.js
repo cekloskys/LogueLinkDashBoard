@@ -1,7 +1,6 @@
 import { Form, Input, Button, Card, message, Select } from 'antd';
 import { DataStore } from 'aws-amplify';
 import { Links, Tutorials  } from '../../models';
-import validator from 'validator';
 
 const AddUrl = () => {
 
@@ -11,14 +10,14 @@ const AddUrl = () => {
     };
 
     const urlPatternValidation = (uri) => {
-        const regex = new RegExp('(https?://)?([\\da-z.-]+)\\.([a-z.]{2,6})[/\\w .-]*/?');    
+        const regex = new RegExp("((https)://)(www.)?[a-zA-Z0-9@:%._\\+~#?&//=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%._\\+~#?&//=]*)");   
         return regex.test(uri);
       };
 
     const onFinish = async ({ uri, title, urlType }) => {
          console.log(uri);
          console.log(urlPatternValidation(uri));
-        if (!uri) {
+        if (!uri || !urlPatternValidation(uri)) {
             message.error('Valid url is required!');
             return;
         }
@@ -48,9 +47,6 @@ const AddUrl = () => {
                     message.success('Tutorial has been created!')
                 }
     }
-
-    
-
 
     return (
         <Card title={'Create Link / Tutorial'} style={{ margin: 20 }}>

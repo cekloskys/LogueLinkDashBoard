@@ -55,9 +55,17 @@ const DeleteUrl = () => {
         }
     ];
 
+    const renderNewItemButton = () => {
+        return (
+            <Link to={'addurl'}>
+                <Button type='primary'>Add Link</Button>
+            </Link>
+        );
+    };
+
     return (
         <div>
-            <Card title={'Links'} style={{ margin: 20 }} >
+            <Card title={'Links'} style={{ margin: 20 }} extra={renderNewItemButton()}>
                 <Table
                     dataSource={links}
                     columns={DeleteLinkTable}

@@ -16,7 +16,7 @@ const ReservationDetails = () => {
     }, [id]);
 
     return (
-        <Card title={`Reservation Number ${id}`} style={{ margin: 20 }}>
+        <Card title={`Reservation Number`} style={{ margin: 20 }}>
             <Descriptions bordered column={{ lg: 1, md: 1, sm: 1 }}>
                 <Descriptions.Item label='Student Name / Email'>{reservation?.studentName} / {reservation?.studentEmai}</Descriptions.Item>
                 <Descriptions.Item label='Date / Time'>{reservation?.date} / {reservation?.startTime}</Descriptions.Item>

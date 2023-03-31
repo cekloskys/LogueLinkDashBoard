@@ -59,10 +59,18 @@ const TutorialsPage = () => {
         }
     ];
 
+    const renderNewItemButton = () => {
+        return (
+            <Link to={'addurl'}>
+                <Button type='primary'>Add Tutorial</Button>
+            </Link>
+        );
+    };
+
     return (
         <div>
             <div>
-                <Card title={'Tutorials'} style={{ margin: 20 }}>
+                <Card title={'Tutorials'} style={{ margin: 20 }} extra={renderNewItemButton()}>
                     <Table
                         dataSource={tutorials}
                         columns={DeleteTutorialTable}
