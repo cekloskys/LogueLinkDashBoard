@@ -10,6 +10,7 @@ import RoomsPage from '../../modules/Room';
 import UpdateRoom from '../../modules/UpdateRoom';
 import AddRoom from '../../modules/AddRoom';
 import DatePage from '../../modules/DatePage';
+import DeleteDate from '../../modules/DeleteDate';
 
 const AppRoutes = () => {
 
@@ -26,7 +27,8 @@ const AppRoutes = () => {
             <Route path='rooms' element={<RoomsPage/>} />
             <Route path='rooms/update/:id' element={<UpdateRoom />} />
             <Route path='rooms/addroom' element={<AddRoom />} />
-            <Route path='dates' element={<DatePage/>} />
+            <Route path='dates/adddate' element={<DatePage/>} />
+            <Route path='dates' element={<DeleteDate/>} />
             
         </Routes>
     );

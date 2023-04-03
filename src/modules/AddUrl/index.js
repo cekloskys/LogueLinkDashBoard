@@ -1,22 +1,24 @@
 import { Form, Input, Button, Card, message, Select } from 'antd';
 import { DataStore } from 'aws-amplify';
-import { Links, Tutorials  } from '../../models';
+import { Links, Tutorials } from '../../models';
+import { useNavigate } from "react-router-dom";
 
 const AddUrl = () => {
 
+    const navigate = useNavigate();
 
     const handleChange = (value) => {
         console.log(`${value}`);
     };
 
     const urlPatternValidation = (uri) => {
-        const regex = new RegExp("((https)://)(www.)?[a-zA-Z0-9@:%._\\+~#?&//=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%._\\+~#?&//=]*)");   
+        const regex = new RegExp("((https)://)(www.)?[a-zA-Z0-9@:%._\\+~#?&//=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%._\\+~#?&//=]*)");
         return regex.test(uri);
-      };
+    };
 
     const onFinish = async ({ uri, title, urlType }) => {
-         console.log(uri);
-         console.log(urlPatternValidation(uri));
+        console.log(uri);
+        console.log(urlPatternValidation(uri));
         if (!uri || !urlPatternValidation(uri)) {
             message.error('Valid url is required!');
             return;
@@ -30,22 +32,24 @@ const AddUrl = () => {
             return;
         }
 
-        if (urlType==='Link'){
+        if (urlType === 'Link') {
             const NewLink = await DataStore.save(
                 new Links({
                     uri,
                     title,
                 }));
-                message.success('Link has been created!')
-            }
-            if (urlType==='Tutorial'){
-                const NewLink = await DataStore.save(
-                    new Tutorials({
-                        uri,
-                        title,
-                    }));
-                    message.success('Tutorial has been created!')
-                }
+            message.success('Link has been created!')
+            navigate('/deleteurl');
+        }
+        if (urlType === 'Tutorial') {
+            const NewLink = await DataStore.save(
+                new Tutorials({
+                    uri,
+                    title,
+                }));
+            message.success('Tutorial has been created!')
+            navigate('/tutorials');
+        }
     }
 
     return (
@@ -71,8 +75,8 @@ const AddUrl = () => {
                                 label: 'Tutorial',
                             },
                         ]}
-                        />
-             </Form.Item>
+                    />
+                </Form.Item>
 
                 <Form.Item>
                     <Button type='primary' htmlType='submit'>Submit</Button>

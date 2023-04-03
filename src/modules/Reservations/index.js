@@ -1,7 +1,7 @@
 import { Card, Table } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from "react";
-import { DataStore } from '@aws-amplify/datastore';
+import { DataStore, Predicates , SortDirection} from 'aws-amplify';
 import { Reservations } from '../../models';
 
 const Reservation = () => {
@@ -11,9 +11,10 @@ const Reservation = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        DataStore.query(Reservations).then(setReservations);
+        DataStore.query(Reservations, Predicates.ALL, {
+            sort: (d) => d.date(SortDirection.DESCENDING)
+        }).then(setReservations);
     }, []);
-
 
     const tableColumns = [
         {

@@ -24,8 +24,19 @@ const DatePage = () => {
 
         console.log(dates);
 
+        await Promise.all(
+            dates.map((a) =>
+                DataStore.save(
+                    new Dates({
+                        date: a,
+                    })
+                )
+            )
+        );
+
         message.success('Dates have been created!')
     }
+    
 
 
     return (
@@ -37,6 +48,7 @@ const DatePage = () => {
                 <Form.Item>
                     <Button type='primary' htmlType='submit'>Submit</Button>
                 </Form.Item>
+                
             </Form>
         </Card>
     );

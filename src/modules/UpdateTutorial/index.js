@@ -67,7 +67,7 @@ const UpdateTutorial = () => {
                 </Form.Item>
                 <Form.Item label={'Title'} required>
                     <TextArea
-                        rows={2}
+                        rows={1}
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
                     />

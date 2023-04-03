@@ -5,6 +5,7 @@ import { Amplify } from 'aws-amplify';
 import awsconfig from './aws-exports';
 import { withAuthenticator } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
+import logo from './assets/griffin_flag.png'
 Amplify.configure(awsconfig);
 
 
@@ -16,7 +17,7 @@ function App() {
     <Layout>
       <Sider style={{backgroundColor: 'white'}}>
         <Image 
-          src='https://lh3.googleusercontent.com/p/AF1QipNOJJBWlVV60ogRcAbZ0zgKIdfdlMx1vtreDrfk=s1360-w1360-h1020'
+          src={logo}
           preview={false}
         />
         <SideMenu />

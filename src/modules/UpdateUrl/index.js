@@ -66,7 +66,7 @@ const UpdateUrl = () => {
                 </Form.Item>
                 <Form.Item label={'Title'} required>
                     <TextArea
-                        rows={4}
+                        rows={1}
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
                     />
