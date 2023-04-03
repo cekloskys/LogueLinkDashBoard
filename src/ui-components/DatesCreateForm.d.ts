@@ -5,8 +5,8 @@
  **************************************************************************/
 
 import * as React from "react";
-import { GridProps, TextFieldProps } from "@aws-amplify/ui-react";
 import { EscapeHatchProps } from "@aws-amplify/ui-react/internal";
+import { GridProps, TextFieldProps } from "@aws-amplify/ui-react";
 export declare type ValidationResponse = {
     hasError: boolean;
     errorMessage?: string;
@@ -18,10 +18,10 @@ export declare type DatesCreateFormInputValues = {
 export declare type DatesCreateFormValidationValues = {
     date?: ValidationFunction<string>;
 };
-export declare type PrimitiveOverrideProps<T> = Partial<T> & React.DOMAttributes<HTMLDivElement>;
+export declare type FormProps<T> = Partial<T> & React.DOMAttributes<HTMLDivElement>;
 export declare type DatesCreateFormOverridesProps = {
-    DatesCreateFormGrid?: PrimitiveOverrideProps<GridProps>;
-    date?: PrimitiveOverrideProps<TextFieldProps>;
+    DatesCreateFormGrid?: FormProps<GridProps>;
+    date?: FormProps<TextFieldProps>;
 } & EscapeHatchProps;
 export declare type DatesCreateFormProps = React.PropsWithChildren<{
     overrides?: DatesCreateFormOverridesProps | undefined | null;
@@ -30,6 +30,7 @@ export declare type DatesCreateFormProps = React.PropsWithChildren<{
     onSubmit?: (fields: DatesCreateFormInputValues) => DatesCreateFormInputValues;
     onSuccess?: (fields: DatesCreateFormInputValues) => void;
     onError?: (fields: DatesCreateFormInputValues, errorMessage: string) => void;
+    onCancel?: () => void;
     onChange?: (fields: DatesCreateFormInputValues) => DatesCreateFormInputValues;
     onValidate?: DatesCreateFormValidationValues;
 } & React.CSSProperties>;

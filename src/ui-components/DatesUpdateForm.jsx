@@ -6,55 +6,47 @@
 
 /* eslint-disable */
 import * as React from "react";
-import { Button, Flex, Grid, TextField } from "@aws-amplify/ui-react";
-import { getOverrideProps } from "@aws-amplify/ui-react/internal";
-import { Dates } from "../models";
 import { fetchByPath, validateField } from "./utils";
+import { Dates } from "../models";
+import { getOverrideProps } from "@aws-amplify/ui-react/internal";
+import { Button, Flex, Grid, TextField } from "@aws-amplify/ui-react";
 import { DataStore } from "aws-amplify";
 export default function DatesUpdateForm(props) {
   const {
-    id: idProp,
+    id,
     dates,
     onSuccess,
     onError,
     onSubmit,
+    onCancel,
     onValidate,
     onChange,
     overrides,
     ...rest
   } = props;
   const initialValues = {
-    date: "",
+    date: undefined,
   };
   const [date, setDate] = React.useState(initialValues.date);
   const [errors, setErrors] = React.useState({});
   const resetStateValues = () => {
-    const cleanValues = datesRecord
-      ? { ...initialValues, ...datesRecord }
-      : initialValues;
+    const cleanValues = { ...initialValues, ...datesRecord };
     setDate(cleanValues.date);
     setErrors({});
   };
   const [datesRecord, setDatesRecord] = React.useState(dates);
   React.useEffect(() => {
     const queryData = async () => {
-      const record = idProp ? await DataStore.query(Dates, idProp) : dates;
+      const record = id ? await DataStore.query(Dates, id) : dates;
       setDatesRecord(record);
     };
     queryData();
-  }, [idProp, dates]);
+  }, [id, dates]);
   React.useEffect(resetStateValues, [datesRecord]);
   const validations = {
     date: [{ type: "Required" }],
   };
-  const runValidationTasks = async (
-    fieldName,
-    currentValue,
-    getDisplayValue
-  ) => {
-    const value = getDisplayValue
-      ? getDisplayValue(currentValue)
-      : currentValue;
+  const runValidationTasks = async (fieldName, value) => {
     let validationResponse = validateField(value, validations[fieldName]);
     const customValidator = fetchByPath(onValidate, fieldName);
     if (customValidator) {
@@ -97,11 +89,6 @@ export default function DatesUpdateForm(props) {
           modelFields = onSubmit(modelFields);
         }
         try {
-          Object.entries(modelFields).forEach(([key, value]) => {
-            if (typeof value === "string" && value.trim() === "") {
-              modelFields[key] = undefined;
-            }
-          });
           await DataStore.save(
             Dates.copyOf(datesRecord, (updated) => {
               Object.assign(updated, modelFields);
@@ -116,14 +103,14 @@ export default function DatesUpdateForm(props) {
           }
         }
       }}
-      {...getOverrideProps(overrides, "DatesUpdateForm")}
       {...rest}
+      {...getOverrideProps(overrides, "DatesUpdateForm")}
     >
       <TextField
         label="Date"
         isRequired={true}
         isReadOnly={false}
-        value={date}
+        defaultValue={date}
         onChange={(e) => {
           let { value } = e.target;
           if (onChange) {
@@ -150,11 +137,7 @@ export default function DatesUpdateForm(props) {
         <Button
           children="Reset"
           type="reset"
-          onClick={(event) => {
-            event.preventDefault();
-            resetStateValues();
-          }}
-          isDisabled={!(idProp || dates)}
+          onClick={resetStateValues}
           {...getOverrideProps(overrides, "ResetButton")}
         ></Button>
         <Flex
@@ -162,13 +145,18 @@ export default function DatesUpdateForm(props) {
           {...getOverrideProps(overrides, "RightAlignCTASubFlex")}
         >
           <Button
+            children="Cancel"
+            type="button"
+            onClick={() => {
+              onCancel && onCancel();
+            }}
+            {...getOverrideProps(overrides, "CancelButton")}
+          ></Button>
+          <Button
             children="Submit"
             type="submit"
             variation="primary"
-            isDisabled={
-              !(idProp || dates) ||
-              Object.values(errors).some((e) => e?.hasError)
-            }
+            isDisabled={Object.values(errors).some((e) => e?.hasError)}
             {...getOverrideProps(overrides, "SubmitButton")}
           ></Button>
         </Flex>

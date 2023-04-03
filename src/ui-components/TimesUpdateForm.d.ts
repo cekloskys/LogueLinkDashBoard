@@ -5,9 +5,9 @@
  **************************************************************************/
 
 import * as React from "react";
-import { GridProps, TextFieldProps } from "@aws-amplify/ui-react";
-import { EscapeHatchProps } from "@aws-amplify/ui-react/internal";
 import { Times } from "../models";
+import { EscapeHatchProps } from "@aws-amplify/ui-react/internal";
+import { GridProps, TextFieldProps } from "@aws-amplify/ui-react";
 export declare type ValidationResponse = {
     hasError: boolean;
     errorMessage?: string;
@@ -19,10 +19,10 @@ export declare type TimesUpdateFormInputValues = {
 export declare type TimesUpdateFormValidationValues = {
     time?: ValidationFunction<string>;
 };
-export declare type PrimitiveOverrideProps<T> = Partial<T> & React.DOMAttributes<HTMLDivElement>;
+export declare type FormProps<T> = Partial<T> & React.DOMAttributes<HTMLDivElement>;
 export declare type TimesUpdateFormOverridesProps = {
-    TimesUpdateFormGrid?: PrimitiveOverrideProps<GridProps>;
-    time?: PrimitiveOverrideProps<TextFieldProps>;
+    TimesUpdateFormGrid?: FormProps<GridProps>;
+    time?: FormProps<TextFieldProps>;
 } & EscapeHatchProps;
 export declare type TimesUpdateFormProps = React.PropsWithChildren<{
     overrides?: TimesUpdateFormOverridesProps | undefined | null;
@@ -32,6 +32,7 @@ export declare type TimesUpdateFormProps = React.PropsWithChildren<{
     onSubmit?: (fields: TimesUpdateFormInputValues) => TimesUpdateFormInputValues;
     onSuccess?: (fields: TimesUpdateFormInputValues) => void;
     onError?: (fields: TimesUpdateFormInputValues, errorMessage: string) => void;
+    onCancel?: () => void;
     onChange?: (fields: TimesUpdateFormInputValues) => TimesUpdateFormInputValues;
     onValidate?: TimesUpdateFormValidationValues;
 } & React.CSSProperties>;

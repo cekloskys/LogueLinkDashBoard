@@ -6,34 +6,33 @@
 
 /* eslint-disable */
 import * as React from "react";
-import { Button, Flex, Grid, TextField } from "@aws-amplify/ui-react";
-import { getOverrideProps } from "@aws-amplify/ui-react/internal";
-import { Tutorials } from "../models";
 import { fetchByPath, validateField } from "./utils";
+import { Tutorials } from "../models";
+import { getOverrideProps } from "@aws-amplify/ui-react/internal";
+import { Button, Flex, Grid, TextField } from "@aws-amplify/ui-react";
 import { DataStore } from "aws-amplify";
 export default function TutorialsUpdateForm(props) {
   const {
-    id: idProp,
+    id,
     tutorials,
     onSuccess,
     onError,
     onSubmit,
+    onCancel,
     onValidate,
     onChange,
     overrides,
     ...rest
   } = props;
   const initialValues = {
-    uri: "",
-    title: "",
+    uri: undefined,
+    title: undefined,
   };
   const [uri, setUri] = React.useState(initialValues.uri);
   const [title, setTitle] = React.useState(initialValues.title);
   const [errors, setErrors] = React.useState({});
   const resetStateValues = () => {
-    const cleanValues = tutorialsRecord
-      ? { ...initialValues, ...tutorialsRecord }
-      : initialValues;
+    const cleanValues = { ...initialValues, ...tutorialsRecord };
     setUri(cleanValues.uri);
     setTitle(cleanValues.title);
     setErrors({});
@@ -41,26 +40,17 @@ export default function TutorialsUpdateForm(props) {
   const [tutorialsRecord, setTutorialsRecord] = React.useState(tutorials);
   React.useEffect(() => {
     const queryData = async () => {
-      const record = idProp
-        ? await DataStore.query(Tutorials, idProp)
-        : tutorials;
+      const record = id ? await DataStore.query(Tutorials, id) : tutorials;
       setTutorialsRecord(record);
     };
     queryData();
-  }, [idProp, tutorials]);
+  }, [id, tutorials]);
   React.useEffect(resetStateValues, [tutorialsRecord]);
   const validations = {
     uri: [],
     title: [],
   };
-  const runValidationTasks = async (
-    fieldName,
-    currentValue,
-    getDisplayValue
-  ) => {
-    const value = getDisplayValue
-      ? getDisplayValue(currentValue)
-      : currentValue;
+  const runValidationTasks = async (fieldName, value) => {
     let validationResponse = validateField(value, validations[fieldName]);
     const customValidator = fetchByPath(onValidate, fieldName);
     if (customValidator) {
@@ -104,11 +94,6 @@ export default function TutorialsUpdateForm(props) {
           modelFields = onSubmit(modelFields);
         }
         try {
-          Object.entries(modelFields).forEach(([key, value]) => {
-            if (typeof value === "string" && value.trim() === "") {
-              modelFields[key] = undefined;
-            }
-          });
           await DataStore.save(
             Tutorials.copyOf(tutorialsRecord, (updated) => {
               Object.assign(updated, modelFields);
@@ -123,14 +108,14 @@ export default function TutorialsUpdateForm(props) {
           }
         }
       }}
-      {...getOverrideProps(overrides, "TutorialsUpdateForm")}
       {...rest}
+      {...getOverrideProps(overrides, "TutorialsUpdateForm")}
     >
       <TextField
         label="Uri"
         isRequired={false}
         isReadOnly={false}
-        value={uri}
+        defaultValue={uri}
         onChange={(e) => {
           let { value } = e.target;
           if (onChange) {
@@ -155,7 +140,7 @@ export default function TutorialsUpdateForm(props) {
         label="Title"
         isRequired={false}
         isReadOnly={false}
-        value={title}
+        defaultValue={title}
         onChange={(e) => {
           let { value } = e.target;
           if (onChange) {
@@ -183,11 +168,7 @@ export default function TutorialsUpdateForm(props) {
         <Button
           children="Reset"
           type="reset"
-          onClick={(event) => {
-            event.preventDefault();
-            resetStateValues();
-          }}
-          isDisabled={!(idProp || tutorials)}
+          onClick={resetStateValues}
           {...getOverrideProps(overrides, "ResetButton")}
         ></Button>
         <Flex
@@ -195,13 +176,18 @@ export default function TutorialsUpdateForm(props) {
           {...getOverrideProps(overrides, "RightAlignCTASubFlex")}
         >
           <Button
+            children="Cancel"
+            type="button"
+            onClick={() => {
+              onCancel && onCancel();
+            }}
+            {...getOverrideProps(overrides, "CancelButton")}
+          ></Button>
+          <Button
             children="Submit"
             type="submit"
             variation="primary"
-            isDisabled={
-              !(idProp || tutorials) ||
-              Object.values(errors).some((e) => e?.hasError)
-            }
+            isDisabled={Object.values(errors).some((e) => e?.hasError)}
             {...getOverrideProps(overrides, "SubmitButton")}
           ></Button>
         </Flex>

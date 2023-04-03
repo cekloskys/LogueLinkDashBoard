@@ -5,8 +5,8 @@
  **************************************************************************/
 
 import * as React from "react";
-import { GridProps, TextFieldProps } from "@aws-amplify/ui-react";
 import { EscapeHatchProps } from "@aws-amplify/ui-react/internal";
+import { GridProps, TextFieldProps } from "@aws-amplify/ui-react";
 export declare type ValidationResponse = {
     hasError: boolean;
     errorMessage?: string;
@@ -18,10 +18,10 @@ export declare type BlocksCreateFormInputValues = {
 export declare type BlocksCreateFormValidationValues = {
     hour?: ValidationFunction<number>;
 };
-export declare type PrimitiveOverrideProps<T> = Partial<T> & React.DOMAttributes<HTMLDivElement>;
+export declare type FormProps<T> = Partial<T> & React.DOMAttributes<HTMLDivElement>;
 export declare type BlocksCreateFormOverridesProps = {
-    BlocksCreateFormGrid?: PrimitiveOverrideProps<GridProps>;
-    hour?: PrimitiveOverrideProps<TextFieldProps>;
+    BlocksCreateFormGrid?: FormProps<GridProps>;
+    hour?: FormProps<TextFieldProps>;
 } & EscapeHatchProps;
 export declare type BlocksCreateFormProps = React.PropsWithChildren<{
     overrides?: BlocksCreateFormOverridesProps | undefined | null;
@@ -30,6 +30,7 @@ export declare type BlocksCreateFormProps = React.PropsWithChildren<{
     onSubmit?: (fields: BlocksCreateFormInputValues) => BlocksCreateFormInputValues;
     onSuccess?: (fields: BlocksCreateFormInputValues) => void;
     onError?: (fields: BlocksCreateFormInputValues, errorMessage: string) => void;
+    onCancel?: () => void;
     onChange?: (fields: BlocksCreateFormInputValues) => BlocksCreateFormInputValues;
     onValidate?: BlocksCreateFormValidationValues;
 } & React.CSSProperties>;

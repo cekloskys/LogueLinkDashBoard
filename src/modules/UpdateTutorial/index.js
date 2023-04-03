@@ -53,7 +53,7 @@ const UpdateTutorial = () => {
         )
         setTutorials(updatedTutorial);
         message.success("Tutorial has been updated!");
-        navigate('/deleteurl');
+        navigate('/tutorials');
     };
 
     return (

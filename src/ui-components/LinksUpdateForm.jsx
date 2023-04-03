@@ -6,34 +6,33 @@
 
 /* eslint-disable */
 import * as React from "react";
-import { Button, Flex, Grid, TextField } from "@aws-amplify/ui-react";
-import { getOverrideProps } from "@aws-amplify/ui-react/internal";
-import { Links } from "../models";
 import { fetchByPath, validateField } from "./utils";
+import { Links } from "../models";
+import { getOverrideProps } from "@aws-amplify/ui-react/internal";
+import { Button, Flex, Grid, TextField } from "@aws-amplify/ui-react";
 import { DataStore } from "aws-amplify";
 export default function LinksUpdateForm(props) {
   const {
-    id: idProp,
+    id,
     links,
     onSuccess,
     onError,
     onSubmit,
+    onCancel,
     onValidate,
     onChange,
     overrides,
     ...rest
   } = props;
   const initialValues = {
-    uri: "",
-    title: "",
+    uri: undefined,
+    title: undefined,
   };
   const [uri, setUri] = React.useState(initialValues.uri);
   const [title, setTitle] = React.useState(initialValues.title);
   const [errors, setErrors] = React.useState({});
   const resetStateValues = () => {
-    const cleanValues = linksRecord
-      ? { ...initialValues, ...linksRecord }
-      : initialValues;
+    const cleanValues = { ...initialValues, ...linksRecord };
     setUri(cleanValues.uri);
     setTitle(cleanValues.title);
     setErrors({});
@@ -41,24 +40,17 @@ export default function LinksUpdateForm(props) {
   const [linksRecord, setLinksRecord] = React.useState(links);
   React.useEffect(() => {
     const queryData = async () => {
-      const record = idProp ? await DataStore.query(Links, idProp) : links;
+      const record = id ? await DataStore.query(Links, id) : links;
       setLinksRecord(record);
     };
     queryData();
-  }, [idProp, links]);
+  }, [id, links]);
   React.useEffect(resetStateValues, [linksRecord]);
   const validations = {
     uri: [],
     title: [],
   };
-  const runValidationTasks = async (
-    fieldName,
-    currentValue,
-    getDisplayValue
-  ) => {
-    const value = getDisplayValue
-      ? getDisplayValue(currentValue)
-      : currentValue;
+  const runValidationTasks = async (fieldName, value) => {
     let validationResponse = validateField(value, validations[fieldName]);
     const customValidator = fetchByPath(onValidate, fieldName);
     if (customValidator) {
@@ -102,11 +94,6 @@ export default function LinksUpdateForm(props) {
           modelFields = onSubmit(modelFields);
         }
         try {
-          Object.entries(modelFields).forEach(([key, value]) => {
-            if (typeof value === "string" && value.trim() === "") {
-              modelFields[key] = undefined;
-            }
-          });
           await DataStore.save(
             Links.copyOf(linksRecord, (updated) => {
               Object.assign(updated, modelFields);
@@ -121,14 +108,14 @@ export default function LinksUpdateForm(props) {
           }
         }
       }}
-      {...getOverrideProps(overrides, "LinksUpdateForm")}
       {...rest}
+      {...getOverrideProps(overrides, "LinksUpdateForm")}
     >
       <TextField
         label="Uri"
         isRequired={false}
         isReadOnly={false}
-        value={uri}
+        defaultValue={uri}
         onChange={(e) => {
           let { value } = e.target;
           if (onChange) {
@@ -153,7 +140,7 @@ export default function LinksUpdateForm(props) {
         label="Title"
         isRequired={false}
         isReadOnly={false}
-        value={title}
+        defaultValue={title}
         onChange={(e) => {
           let { value } = e.target;
           if (onChange) {
@@ -181,11 +168,7 @@ export default function LinksUpdateForm(props) {
         <Button
           children="Reset"
           type="reset"
-          onClick={(event) => {
-            event.preventDefault();
-            resetStateValues();
-          }}
-          isDisabled={!(idProp || links)}
+          onClick={resetStateValues}
           {...getOverrideProps(overrides, "ResetButton")}
         ></Button>
         <Flex
@@ -193,13 +176,18 @@ export default function LinksUpdateForm(props) {
           {...getOverrideProps(overrides, "RightAlignCTASubFlex")}
         >
           <Button
+            children="Cancel"
+            type="button"
+            onClick={() => {
+              onCancel && onCancel();
+            }}
+            {...getOverrideProps(overrides, "CancelButton")}
+          ></Button>
+          <Button
             children="Submit"
             type="submit"
             variation="primary"
-            isDisabled={
-              !(idProp || links) ||
-              Object.values(errors).some((e) => e?.hasError)
-            }
+            isDisabled={Object.values(errors).some((e) => e?.hasError)}
             {...getOverrideProps(overrides, "SubmitButton")}
           ></Button>
         </Flex>

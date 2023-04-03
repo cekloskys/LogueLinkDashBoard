@@ -5,8 +5,8 @@
  **************************************************************************/
 
 import * as React from "react";
-import { GridProps, TextFieldProps } from "@aws-amplify/ui-react";
 import { EscapeHatchProps } from "@aws-amplify/ui-react/internal";
+import { GridProps, TextFieldProps } from "@aws-amplify/ui-react";
 export declare type ValidationResponse = {
     hasError: boolean;
     errorMessage?: string;
@@ -20,11 +20,11 @@ export declare type LinksCreateFormValidationValues = {
     uri?: ValidationFunction<string>;
     title?: ValidationFunction<string>;
 };
-export declare type PrimitiveOverrideProps<T> = Partial<T> & React.DOMAttributes<HTMLDivElement>;
+export declare type FormProps<T> = Partial<T> & React.DOMAttributes<HTMLDivElement>;
 export declare type LinksCreateFormOverridesProps = {
-    LinksCreateFormGrid?: PrimitiveOverrideProps<GridProps>;
-    uri?: PrimitiveOverrideProps<TextFieldProps>;
-    title?: PrimitiveOverrideProps<TextFieldProps>;
+    LinksCreateFormGrid?: FormProps<GridProps>;
+    uri?: FormProps<TextFieldProps>;
+    title?: FormProps<TextFieldProps>;
 } & EscapeHatchProps;
 export declare type LinksCreateFormProps = React.PropsWithChildren<{
     overrides?: LinksCreateFormOverridesProps | undefined | null;
@@ -33,6 +33,7 @@ export declare type LinksCreateFormProps = React.PropsWithChildren<{
     onSubmit?: (fields: LinksCreateFormInputValues) => LinksCreateFormInputValues;
     onSuccess?: (fields: LinksCreateFormInputValues) => void;
     onError?: (fields: LinksCreateFormInputValues, errorMessage: string) => void;
+    onCancel?: () => void;
     onChange?: (fields: LinksCreateFormInputValues) => LinksCreateFormInputValues;
     onValidate?: LinksCreateFormValidationValues;
 } & React.CSSProperties>;
