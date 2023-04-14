@@ -20,6 +20,10 @@ const SideMenu = () => {
             label: 'Dates',
         },
         {
+            key: 'times',
+            label: 'Times',
+        },
+        {
             key: 'deleteurl',
             label: 'Links',
         },
