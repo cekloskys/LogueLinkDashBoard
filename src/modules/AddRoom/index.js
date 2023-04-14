@@ -1,9 +1,9 @@
 import { Form, Input, Button, Card, message} from 'antd';
 import { DataStore } from 'aws-amplify';
 import { Rooms } from '../../models';
-
+import { useNavigate } from "react-router-dom";
 const AddRoom = () => {
-
+    const navigate = useNavigate();
 
     const onFinish = async ({ room }) => {
         if (!room) {
@@ -15,6 +15,7 @@ const AddRoom = () => {
                 room,
             }));
         message.success('Room has been created!')
+        navigate('/rooms');
     }
 
     return (

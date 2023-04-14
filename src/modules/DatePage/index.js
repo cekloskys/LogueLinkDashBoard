@@ -4,8 +4,10 @@ import { Form, Button, Card, message } from 'antd';
 import { useState } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
+import { useNavigate } from "react-router-dom";
 
 const DatePage = () => {
+    const navigate = useNavigate();
     
     const [cal, setCal] = useState(new Date());
 
@@ -35,6 +37,7 @@ const DatePage = () => {
         );
 
         message.success('Dates have been created!')
+        navigate('/dates');
     }
     
 
