@@ -34,7 +34,8 @@ const TimesPage = () => {
             }
             var t = {};
             t.time = hours.toString();
-            t.id=i+1;
+            //t.id=i+1;
+            t.id=times[i].id
             dt.push(t);
             
         }
@@ -44,6 +45,7 @@ const TimesPage = () => {
 
 
     const deleteTime = async (item) => {
+        console.log(item)
         await DataStore.delete(Times, d => d.id.eq(item.id));
         setTimes(times.filter((d) => d.id !== item.id));
         message.success('Time has been deleted.');
