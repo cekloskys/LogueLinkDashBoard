@@ -13,7 +13,6 @@ const DeleteDate = () => {
         DataStore.query(Dates, Predicates.ALL, {
             sort: (d) => d.date(SortDirection.DESCENDING)
         }).then(setDates);
-        //DataStore.query(Dates).then(setDates);
     }, []);
 
 

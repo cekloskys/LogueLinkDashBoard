@@ -5,9 +5,9 @@
  **************************************************************************/
 
 import * as React from "react";
-import { Tutorials } from "../models";
-import { EscapeHatchProps } from "@aws-amplify/ui-react/internal";
 import { GridProps, TextFieldProps } from "@aws-amplify/ui-react";
+import { EscapeHatchProps } from "@aws-amplify/ui-react/internal";
+import { Tutorials } from "../models";
 export declare type ValidationResponse = {
     hasError: boolean;
     errorMessage?: string;
@@ -21,11 +21,11 @@ export declare type TutorialsUpdateFormValidationValues = {
     uri?: ValidationFunction<string>;
     title?: ValidationFunction<string>;
 };
-export declare type FormProps<T> = Partial<T> & React.DOMAttributes<HTMLDivElement>;
+export declare type PrimitiveOverrideProps<T> = Partial<T> & React.DOMAttributes<HTMLDivElement>;
 export declare type TutorialsUpdateFormOverridesProps = {
-    TutorialsUpdateFormGrid?: FormProps<GridProps>;
-    uri?: FormProps<TextFieldProps>;
-    title?: FormProps<TextFieldProps>;
+    TutorialsUpdateFormGrid?: PrimitiveOverrideProps<GridProps>;
+    uri?: PrimitiveOverrideProps<TextFieldProps>;
+    title?: PrimitiveOverrideProps<TextFieldProps>;
 } & EscapeHatchProps;
 export declare type TutorialsUpdateFormProps = React.PropsWithChildren<{
     overrides?: TutorialsUpdateFormOverridesProps | undefined | null;
@@ -35,7 +35,6 @@ export declare type TutorialsUpdateFormProps = React.PropsWithChildren<{
     onSubmit?: (fields: TutorialsUpdateFormInputValues) => TutorialsUpdateFormInputValues;
     onSuccess?: (fields: TutorialsUpdateFormInputValues) => void;
     onError?: (fields: TutorialsUpdateFormInputValues, errorMessage: string) => void;
-    onCancel?: () => void;
     onChange?: (fields: TutorialsUpdateFormInputValues) => TutorialsUpdateFormInputValues;
     onValidate?: TutorialsUpdateFormValidationValues;
 } & React.CSSProperties>;

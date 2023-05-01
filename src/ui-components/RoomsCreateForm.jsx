@@ -6,10 +6,10 @@
 
 /* eslint-disable */
 import * as React from "react";
-import { fetchByPath, validateField } from "./utils";
-import { Rooms } from "../models";
-import { getOverrideProps } from "@aws-amplify/ui-react/internal";
 import { Button, Flex, Grid, TextField } from "@aws-amplify/ui-react";
+import { getOverrideProps } from "@aws-amplify/ui-react/internal";
+import { Rooms } from "../models";
+import { fetchByPath, validateField } from "./utils";
 import { DataStore } from "aws-amplify";
 export default function RoomsCreateForm(props) {
   const {
@@ -17,14 +17,13 @@ export default function RoomsCreateForm(props) {
     onSuccess,
     onError,
     onSubmit,
-    onCancel,
     onValidate,
     onChange,
     overrides,
     ...rest
   } = props;
   const initialValues = {
-    room: undefined,
+    room: "",
   };
   const [room, setRoom] = React.useState(initialValues.room);
   const [errors, setErrors] = React.useState({});
@@ -35,7 +34,14 @@ export default function RoomsCreateForm(props) {
   const validations = {
     room: [{ type: "Required" }],
   };
-  const runValidationTasks = async (fieldName, value) => {
+  const runValidationTasks = async (
+    fieldName,
+    currentValue,
+    getDisplayValue
+  ) => {
+    const value = getDisplayValue
+      ? getDisplayValue(currentValue)
+      : currentValue;
     let validationResponse = validateField(value, validations[fieldName]);
     const customValidator = fetchByPath(onValidate, fieldName);
     if (customValidator) {
@@ -78,6 +84,11 @@ export default function RoomsCreateForm(props) {
           modelFields = onSubmit(modelFields);
         }
         try {
+          Object.entries(modelFields).forEach(([key, value]) => {
+            if (typeof value === "string" && value.trim() === "") {
+              modelFields[key] = undefined;
+            }
+          });
           await DataStore.save(new Rooms(modelFields));
           if (onSuccess) {
             onSuccess(modelFields);
@@ -91,13 +102,14 @@ export default function RoomsCreateForm(props) {
           }
         }
       }}
-      {...rest}
       {...getOverrideProps(overrides, "RoomsCreateForm")}
+      {...rest}
     >
       <TextField
         label="Room"
         isRequired={true}
         isReadOnly={false}
+        value={room}
         onChange={(e) => {
           let { value } = e.target;
           if (onChange) {
@@ -124,21 +136,16 @@ export default function RoomsCreateForm(props) {
         <Button
           children="Clear"
           type="reset"
-          onClick={resetStateValues}
+          onClick={(event) => {
+            event.preventDefault();
+            resetStateValues();
+          }}
           {...getOverrideProps(overrides, "ClearButton")}
         ></Button>
         <Flex
           gap="15px"
           {...getOverrideProps(overrides, "RightAlignCTASubFlex")}
         >
-          <Button
-            children="Cancel"
-            type="button"
-            onClick={() => {
-              onCancel && onCancel();
-            }}
-            {...getOverrideProps(overrides, "CancelButton")}
-          ></Button>
           <Button
             children="Submit"
             type="submit"

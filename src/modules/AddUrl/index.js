@@ -17,8 +17,7 @@ const AddUrl = () => {
     };
 
     const onFinish = async ({ uri, title, urlType }) => {
-        console.log(uri);
-        console.log(urlPatternValidation(uri));
+        
         if (!uri || !urlPatternValidation(uri)) {
             message.error('Valid url is required!');
             return;

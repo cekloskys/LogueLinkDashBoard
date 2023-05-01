@@ -23,7 +23,7 @@ const UpdateTutorial = () => {
         DataStore.query(Tutorials, id).then(setTutorials);
 
     }, [id])
-    console.log(tutorials)
+    
     useEffect(() => {
         if (!Tutorials) {
             return;

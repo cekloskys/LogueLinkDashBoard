@@ -5,8 +5,8 @@
  **************************************************************************/
 
 import * as React from "react";
-import { EscapeHatchProps } from "@aws-amplify/ui-react/internal";
 import { GridProps, TextFieldProps } from "@aws-amplify/ui-react";
+import { EscapeHatchProps } from "@aws-amplify/ui-react/internal";
 export declare type ValidationResponse = {
     hasError: boolean;
     errorMessage?: string;
@@ -18,10 +18,10 @@ export declare type RoomsCreateFormInputValues = {
 export declare type RoomsCreateFormValidationValues = {
     room?: ValidationFunction<string>;
 };
-export declare type FormProps<T> = Partial<T> & React.DOMAttributes<HTMLDivElement>;
+export declare type PrimitiveOverrideProps<T> = Partial<T> & React.DOMAttributes<HTMLDivElement>;
 export declare type RoomsCreateFormOverridesProps = {
-    RoomsCreateFormGrid?: FormProps<GridProps>;
-    room?: FormProps<TextFieldProps>;
+    RoomsCreateFormGrid?: PrimitiveOverrideProps<GridProps>;
+    room?: PrimitiveOverrideProps<TextFieldProps>;
 } & EscapeHatchProps;
 export declare type RoomsCreateFormProps = React.PropsWithChildren<{
     overrides?: RoomsCreateFormOverridesProps | undefined | null;
@@ -30,7 +30,6 @@ export declare type RoomsCreateFormProps = React.PropsWithChildren<{
     onSubmit?: (fields: RoomsCreateFormInputValues) => RoomsCreateFormInputValues;
     onSuccess?: (fields: RoomsCreateFormInputValues) => void;
     onError?: (fields: RoomsCreateFormInputValues, errorMessage: string) => void;
-    onCancel?: () => void;
     onChange?: (fields: RoomsCreateFormInputValues) => RoomsCreateFormInputValues;
     onValidate?: RoomsCreateFormValidationValues;
 } & React.CSSProperties>;

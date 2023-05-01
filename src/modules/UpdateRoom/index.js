@@ -22,7 +22,7 @@ const UpdateRoom = () => {
         DataStore.query(Rooms, id).then(setRooms);
 
     }, [id])
-    console.log(rooms)
+    
     useEffect(() => {
         if (!Rooms) {
             return;

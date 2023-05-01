@@ -6,47 +6,55 @@
 
 /* eslint-disable */
 import * as React from "react";
-import { fetchByPath, validateField } from "./utils";
-import { Rooms } from "../models";
-import { getOverrideProps } from "@aws-amplify/ui-react/internal";
 import { Button, Flex, Grid, TextField } from "@aws-amplify/ui-react";
+import { getOverrideProps } from "@aws-amplify/ui-react/internal";
+import { Rooms } from "../models";
+import { fetchByPath, validateField } from "./utils";
 import { DataStore } from "aws-amplify";
 export default function RoomsUpdateForm(props) {
   const {
-    id,
+    id: idProp,
     rooms,
     onSuccess,
     onError,
     onSubmit,
-    onCancel,
     onValidate,
     onChange,
     overrides,
     ...rest
   } = props;
   const initialValues = {
-    room: undefined,
+    room: "",
   };
   const [room, setRoom] = React.useState(initialValues.room);
   const [errors, setErrors] = React.useState({});
   const resetStateValues = () => {
-    const cleanValues = { ...initialValues, ...roomsRecord };
+    const cleanValues = roomsRecord
+      ? { ...initialValues, ...roomsRecord }
+      : initialValues;
     setRoom(cleanValues.room);
     setErrors({});
   };
   const [roomsRecord, setRoomsRecord] = React.useState(rooms);
   React.useEffect(() => {
     const queryData = async () => {
-      const record = id ? await DataStore.query(Rooms, id) : rooms;
+      const record = idProp ? await DataStore.query(Rooms, idProp) : rooms;
       setRoomsRecord(record);
     };
     queryData();
-  }, [id, rooms]);
+  }, [idProp, rooms]);
   React.useEffect(resetStateValues, [roomsRecord]);
   const validations = {
     room: [{ type: "Required" }],
   };
-  const runValidationTasks = async (fieldName, value) => {
+  const runValidationTasks = async (
+    fieldName,
+    currentValue,
+    getDisplayValue
+  ) => {
+    const value = getDisplayValue
+      ? getDisplayValue(currentValue)
+      : currentValue;
     let validationResponse = validateField(value, validations[fieldName]);
     const customValidator = fetchByPath(onValidate, fieldName);
     if (customValidator) {
@@ -89,6 +97,11 @@ export default function RoomsUpdateForm(props) {
           modelFields = onSubmit(modelFields);
         }
         try {
+          Object.entries(modelFields).forEach(([key, value]) => {
+            if (typeof value === "string" && value.trim() === "") {
+              modelFields[key] = undefined;
+            }
+          });
           await DataStore.save(
             Rooms.copyOf(roomsRecord, (updated) => {
               Object.assign(updated, modelFields);
@@ -103,14 +116,14 @@ export default function RoomsUpdateForm(props) {
           }
         }
       }}
-      {...rest}
       {...getOverrideProps(overrides, "RoomsUpdateForm")}
+      {...rest}
     >
       <TextField
         label="Room"
         isRequired={true}
         isReadOnly={false}
-        defaultValue={room}
+        value={room}
         onChange={(e) => {
           let { value } = e.target;
           if (onChange) {
@@ -137,7 +150,11 @@ export default function RoomsUpdateForm(props) {
         <Button
           children="Reset"
           type="reset"
-          onClick={resetStateValues}
+          onClick={(event) => {
+            event.preventDefault();
+            resetStateValues();
+          }}
+          isDisabled={!(idProp || rooms)}
           {...getOverrideProps(overrides, "ResetButton")}
         ></Button>
         <Flex
@@ -145,18 +162,13 @@ export default function RoomsUpdateForm(props) {
           {...getOverrideProps(overrides, "RightAlignCTASubFlex")}
         >
           <Button
-            children="Cancel"
-            type="button"
-            onClick={() => {
-              onCancel && onCancel();
-            }}
-            {...getOverrideProps(overrides, "CancelButton")}
-          ></Button>
-          <Button
             children="Submit"
             type="submit"
             variation="primary"
-            isDisabled={Object.values(errors).some((e) => e?.hasError)}
+            isDisabled={
+              !(idProp || rooms) ||
+              Object.values(errors).some((e) => e?.hasError)
+            }
             {...getOverrideProps(overrides, "SubmitButton")}
           ></Button>
         </Flex>

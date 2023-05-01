@@ -6,47 +6,55 @@
 
 /* eslint-disable */
 import * as React from "react";
-import { fetchByPath, validateField } from "./utils";
-import { Times } from "../models";
-import { getOverrideProps } from "@aws-amplify/ui-react/internal";
 import { Button, Flex, Grid, TextField } from "@aws-amplify/ui-react";
+import { getOverrideProps } from "@aws-amplify/ui-react/internal";
+import { Times } from "../models";
+import { fetchByPath, validateField } from "./utils";
 import { DataStore } from "aws-amplify";
 export default function TimesUpdateForm(props) {
   const {
-    id,
+    id: idProp,
     times,
     onSuccess,
     onError,
     onSubmit,
-    onCancel,
     onValidate,
     onChange,
     overrides,
     ...rest
   } = props;
   const initialValues = {
-    time: undefined,
+    time: "",
   };
   const [time, setTime] = React.useState(initialValues.time);
   const [errors, setErrors] = React.useState({});
   const resetStateValues = () => {
-    const cleanValues = { ...initialValues, ...timesRecord };
+    const cleanValues = timesRecord
+      ? { ...initialValues, ...timesRecord }
+      : initialValues;
     setTime(cleanValues.time);
     setErrors({});
   };
   const [timesRecord, setTimesRecord] = React.useState(times);
   React.useEffect(() => {
     const queryData = async () => {
-      const record = id ? await DataStore.query(Times, id) : times;
+      const record = idProp ? await DataStore.query(Times, idProp) : times;
       setTimesRecord(record);
     };
     queryData();
-  }, [id, times]);
+  }, [idProp, times]);
   React.useEffect(resetStateValues, [timesRecord]);
   const validations = {
     time: [],
   };
-  const runValidationTasks = async (fieldName, value) => {
+  const runValidationTasks = async (
+    fieldName,
+    currentValue,
+    getDisplayValue
+  ) => {
+    const value = getDisplayValue
+      ? getDisplayValue(currentValue)
+      : currentValue;
     let validationResponse = validateField(value, validations[fieldName]);
     const customValidator = fetchByPath(onValidate, fieldName);
     if (customValidator) {
@@ -89,6 +97,11 @@ export default function TimesUpdateForm(props) {
           modelFields = onSubmit(modelFields);
         }
         try {
+          Object.entries(modelFields).forEach(([key, value]) => {
+            if (typeof value === "string" && value.trim() === "") {
+              modelFields[key] = undefined;
+            }
+          });
           await DataStore.save(
             Times.copyOf(timesRecord, (updated) => {
               Object.assign(updated, modelFields);
@@ -103,15 +116,15 @@ export default function TimesUpdateForm(props) {
           }
         }
       }}
-      {...rest}
       {...getOverrideProps(overrides, "TimesUpdateForm")}
+      {...rest}
     >
       <TextField
         label="Time"
         isRequired={false}
         isReadOnly={false}
         type="time"
-        defaultValue={time}
+        value={time}
         onChange={(e) => {
           let { value } = e.target;
           if (onChange) {
@@ -138,7 +151,11 @@ export default function TimesUpdateForm(props) {
         <Button
           children="Reset"
           type="reset"
-          onClick={resetStateValues}
+          onClick={(event) => {
+            event.preventDefault();
+            resetStateValues();
+          }}
+          isDisabled={!(idProp || times)}
           {...getOverrideProps(overrides, "ResetButton")}
         ></Button>
         <Flex
@@ -146,18 +163,13 @@ export default function TimesUpdateForm(props) {
           {...getOverrideProps(overrides, "RightAlignCTASubFlex")}
         >
           <Button
-            children="Cancel"
-            type="button"
-            onClick={() => {
-              onCancel && onCancel();
-            }}
-            {...getOverrideProps(overrides, "CancelButton")}
-          ></Button>
-          <Button
             children="Submit"
             type="submit"
             variation="primary"
-            isDisabled={Object.values(errors).some((e) => e?.hasError)}
+            isDisabled={
+              !(idProp || times) ||
+              Object.values(errors).some((e) => e?.hasError)
+            }
             {...getOverrideProps(overrides, "SubmitButton")}
           ></Button>
         </Flex>

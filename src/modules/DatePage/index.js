@@ -24,7 +24,7 @@ const DatePage = () => {
             start.setDate(start.getDate() + 1);
         }
 
-        console.log(dates);
+   
 
         await Promise.all(
             dates.map((a) =>

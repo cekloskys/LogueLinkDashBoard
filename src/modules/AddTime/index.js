@@ -20,10 +20,8 @@ const AddTime = () => {
             message.error('Valid time is required!');
             return;
         }
-       // console.log(time.$d)
+    
         
-        console.log(moment(time.$d).format(moment.HTML5_FMT.TIME_MS))
-       // console.log(moment(time.$d,["hh:mm:ss.SSS", moment.ISO_8601]))
         await DataStore.save(
             new Times({
                 time:moment(time.$d).format(moment.HTML5_FMT.TIME),

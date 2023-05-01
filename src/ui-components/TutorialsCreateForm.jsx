@@ -6,10 +6,10 @@
 
 /* eslint-disable */
 import * as React from "react";
-import { fetchByPath, validateField } from "./utils";
-import { Tutorials } from "../models";
-import { getOverrideProps } from "@aws-amplify/ui-react/internal";
 import { Button, Flex, Grid, TextField } from "@aws-amplify/ui-react";
+import { getOverrideProps } from "@aws-amplify/ui-react/internal";
+import { Tutorials } from "../models";
+import { fetchByPath, validateField } from "./utils";
 import { DataStore } from "aws-amplify";
 export default function TutorialsCreateForm(props) {
   const {
@@ -17,15 +17,14 @@ export default function TutorialsCreateForm(props) {
     onSuccess,
     onError,
     onSubmit,
-    onCancel,
     onValidate,
     onChange,
     overrides,
     ...rest
   } = props;
   const initialValues = {
-    uri: undefined,
-    title: undefined,
+    uri: "",
+    title: "",
   };
   const [uri, setUri] = React.useState(initialValues.uri);
   const [title, setTitle] = React.useState(initialValues.title);
@@ -39,7 +38,14 @@ export default function TutorialsCreateForm(props) {
     uri: [],
     title: [],
   };
-  const runValidationTasks = async (fieldName, value) => {
+  const runValidationTasks = async (
+    fieldName,
+    currentValue,
+    getDisplayValue
+  ) => {
+    const value = getDisplayValue
+      ? getDisplayValue(currentValue)
+      : currentValue;
     let validationResponse = validateField(value, validations[fieldName]);
     const customValidator = fetchByPath(onValidate, fieldName);
     if (customValidator) {
@@ -83,6 +89,11 @@ export default function TutorialsCreateForm(props) {
           modelFields = onSubmit(modelFields);
         }
         try {
+          Object.entries(modelFields).forEach(([key, value]) => {
+            if (typeof value === "string" && value.trim() === "") {
+              modelFields[key] = undefined;
+            }
+          });
           await DataStore.save(new Tutorials(modelFields));
           if (onSuccess) {
             onSuccess(modelFields);
@@ -96,13 +107,14 @@ export default function TutorialsCreateForm(props) {
           }
         }
       }}
-      {...rest}
       {...getOverrideProps(overrides, "TutorialsCreateForm")}
+      {...rest}
     >
       <TextField
         label="Uri"
         isRequired={false}
         isReadOnly={false}
+        value={uri}
         onChange={(e) => {
           let { value } = e.target;
           if (onChange) {
@@ -127,6 +139,7 @@ export default function TutorialsCreateForm(props) {
         label="Title"
         isRequired={false}
         isReadOnly={false}
+        value={title}
         onChange={(e) => {
           let { value } = e.target;
           if (onChange) {
@@ -154,21 +167,16 @@ export default function TutorialsCreateForm(props) {
         <Button
           children="Clear"
           type="reset"
-          onClick={resetStateValues}
+          onClick={(event) => {
+            event.preventDefault();
+            resetStateValues();
+          }}
           {...getOverrideProps(overrides, "ClearButton")}
         ></Button>
         <Flex
           gap="15px"
           {...getOverrideProps(overrides, "RightAlignCTASubFlex")}
         >
-          <Button
-            children="Cancel"
-            type="button"
-            onClick={() => {
-              onCancel && onCancel();
-            }}
-            {...getOverrideProps(overrides, "CancelButton")}
-          ></Button>
           <Button
             children="Submit"
             type="submit"
